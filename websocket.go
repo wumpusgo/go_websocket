@@ -11,7 +11,7 @@ import (
 )
 
 type Client struct {
-	id string
+	ID string `json:"id"`
 }
 
 // Upgrader is used to upgrade HTTP connections to WebSocket connections.
@@ -29,13 +29,14 @@ func getConnectedUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	clientsObj := make([]Client, 0, 10)
-	w.Header().Set("Content-Type", "application/json")
+
 	list := slices.Collect(maps.Keys(clients))
 	for key, value := range list {
 		fmt.Println(key, value)
-		clientsObj = append(clientsObj, Client{id: value})
+		clientsObj = append(clientsObj, Client{ID: value})
 	}
 	fmt.Println("clientes ", len(clients))
+	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(clientsObj)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
